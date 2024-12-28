@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            margin-top: 20px;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+            background-color: #343a40;
+        }
+
+        .navbar-brand {
+            color: #fff;
+        }
+
+        .navbar-brand:hover {
+            color: #ddd;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .card-title {
+            color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Real Estate</a>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-4">Welcome, {{ employee.name }}!</h1>
+        <p>Your current location and nearby brokers are displayed below.</p>
+
+        <!-- Map container -->
+        <div id="map"></div>
+
+        <!-- Nearby brokers -->
+        <div class="card">
+            <div class="card-header">Nearby Brokers</div>
+            <div class="card-body">
+                {% if brokers %}
+                    <ul class="list-group">
+                        {% for broker in brokers %}
+                            <li class="list-group-item">
+                                <h5 class="card-title">{{ broker.name }}</h5>
+                                <p class="card-text">Location: {{ broker.location }}</p>
+                                <form method="POST" action="{% url 'dashboard' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="broker_id" value="{{ broker.id }}">
+                                    <div class="form-group">
+                                        <label for="meeting_date">Meeting Date</label>
+                                        <input type="date" name="meeting_date" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="feedback">Feedback</label>
+                                        <textarea name="feedback" class="form-control" rows="3" placeholder="Enter feedback" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Schedule Meeting</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No brokers within your range.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map centered on the user's location
+        var map = L.map('map').setView([{{ user_latitude }}, {{ user_longitude }}], 13);
+    
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    
+        // Add a marker for the user's location
+        var userMarker = L.marker([{{ user_latitude }}, {{ user_longitude }}]).addTo(map);
+        userMarker.bindPopup("<b>Your Location</b>").openPopup();
+    
+        // Add markers for brokers
+        {% for broker in brokers %}
+            var brokerMarker = L.marker([{{ broker.latitude }}, {{ broker.longitude }}]).addTo(map);
+            brokerMarker.bindPopup("<b>{{ broker.name }}</b><br>{{ broker.location }}<br>Distance: {{ broker.distance }} meters");
+        {% endfor %}
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

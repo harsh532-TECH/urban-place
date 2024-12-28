@@ -1,0 +1,5 @@
+<h1>Welcome, {{ user.username }}!</h1>
+{% for meeting in meetings %}
+    <p>{{ meeting.date }} with {{ meeting.broker.name }} - Status: {{ meeting.is_approved|yesno:"Approved,Cancelled" }}</p>
+{% endfor %}
+<a href="{% url 'schedule_meeting' %}">Schedule a Meeting</a>

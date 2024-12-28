@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Confirmation</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2c7d59;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .meeting-details {
+            padding: 20px;
+            background: #f4fdf6;
+            border-radius: 8px;
+            border: 1px solid #b5dfc8;
+        }
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+        .details-item:last-child {
+            border-bottom: none;
+        }
+        .details-item strong {
+            color: #2c7d59;
+            font-weight: 500;
+        }
+        .details-item span {
+            color: #555;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #2c7d59;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        a:hover {
+            background: #246a48;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .details-item {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meeting Scheduled Successfully</h1>
+        <p>Your meeting has been scheduled. Here are the details:</p>
+
+        <div class="meeting-details">
+            <div class="details-item">
+                <strong>Broker Name:</strong> <span>{{ meeting_broker }}</span>
+            </div>
+            <div class="details-item">
+                <strong>Date:</strong> <span>{{ meeting_date }}</span>
+            </div>
+            <div class="details-item">
+                <strong>Feedback:</strong> <span>{{ meeting_feedback }}</span>
+            </div>
+        </div>
+
+        <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
